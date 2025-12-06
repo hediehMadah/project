@@ -3,13 +3,7 @@ kind: Deployment
 metadata:
   name: compute-svc
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
-  #replicas: 2
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: compute-svc
@@ -20,14 +14,12 @@ spec:
     spec:
       containers:
       - name: compute-svc
-        # I pushed compute-svc image in my dockerhub 
         image: hm7206/tisa:compute-svc
         ports:
         - containerPort: 8080
         env:
         - name: APP_VERSION
           value: "1.0"
-
         - name: APP_LOG_LEVEL
           valueFrom:
             configMapKeyRef:
@@ -38,16 +30,3 @@ spec:
             secretKeyRef:
               name: compute-svc-secret
               key: DATABASE_PASSWORD
-
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
