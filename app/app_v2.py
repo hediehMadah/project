@@ -8,10 +8,6 @@ metrics = PrometheusMetrics(app)
 
 @metrics.histogram('http_request_latency_seconds', 'Request Latency Histogram', buckets=[0.1, 0.5, 1, 2, 5, 10])
 @app.route('/compute', methods=['POST'])
-def compute():
-    start_time = time.time()
-    data = request.json
-    n = data.get('n', 0)
 
 @app.route('/healthz', methods=['GET'])
 def health_check():
@@ -30,6 +26,10 @@ def compute():
     data = request.json
     n = data.get('n', 0)
     
+    start_time = time.time()
+    data = request.json
+    n = data.get('n', 0)
+
     def fibonacci(n):
         if n <= 0:
             return 0
